@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_yasg",
     "corsheaders",
+    "colorfield",
     # apps
     "constructor",
 ]
@@ -93,9 +94,7 @@ REST_FRAMEWORK = {
 
 if DEBUG:
     SIMPLE_JWT = {
-        "ACCESS_TOKEN_LIFETIME": timedelta(
-            minutes=10000
-        ),
+        "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10000),
     }
 
 LANGUAGE_CODE = "en-us"
