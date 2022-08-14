@@ -30,6 +30,7 @@ class Block(models.Model):
         related_query_name="blocks",
         on_delete=models.CASCADE,
     )
+    slug = models.SlugField(max_length=10, blank=False, unique=True)
 
     # margin
     margin_right = models.CharField(max_length=20)

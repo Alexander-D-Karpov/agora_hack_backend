@@ -1,0 +1,47 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$KuesBiNTnKdXwlh18hxEgi$kNags0APA8njo/tpP079uuGMUbolUQnEE9yA7d1trfw\u003d",
+      "last_login": "2022-08-14T07:22:29.854Z",
+      "is_superuser": true,
+      "username": "sanspie",
+      "first_name": "",
+      "last_name": "",
+      "email": "a@aa.aa",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2022-08-14T07:22:15.307Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "constructor.fontfamily",
+    "pk": 1,
+    "fields": {
+      "file": "base/fonts/OpenSans.ttf",
+      "user": 1,
+      "name": "Open Sans"
+    }
+  },
+  {
+  "model": "constructor.fontfamily",
+  "pk": 2,
+  "fields": {
+    "file": "base/fonts/Roboto-Regular.ttf",
+    "user": 1,
+    "name": "Roboto"
+  }
+},
+  {
+  "model": "constructor.fontfamily",
+  "pk": 3,
+  "fields": {
+    "file": "base/fonts/Montserrat-VariableFont_wght.ttf",
+    "user": 1,
+    "name": "Monserrat"
+  }
+}
+]

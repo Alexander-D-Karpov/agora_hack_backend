@@ -11,6 +11,10 @@ class FontFamily(BaseMediaModel):
         return self.name
 
 
+def get_default_font():
+    return FontFamily.objects.get(id=1)
+
+
 class Text(Block):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,7 +24,11 @@ class Text(Block):
     font_size = models.IntegerField(
         default=12, validators=[MinValueValidator(1), MaxValueValidator(200)]
     )
-    font_family = models.CharField(max_length=200)
+    font_family = models.ForeignKey(
+        FontFamily,
+        default=get_default_font,
+        on_delete=models.SET_DEFAULT,
+    )
 
     def __str__(self):
         return f"text on {self.site.name}"
