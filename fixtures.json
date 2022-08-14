@@ -27,21 +27,21 @@
     }
   },
   {
-  "model": "constructor.fontfamily",
-  "pk": 2,
-  "fields": {
-    "file": "base/fonts/Roboto-Regular.ttf",
-    "user": 1,
-    "name": "Roboto"
-  }
-},
+    "model": "constructor.fontfamily",
+    "pk": 2,
+    "fields": {
+      "file": "base/fonts/Roboto-Regular.ttf",
+      "user": 1,
+      "name": "Roboto"
+    }
+  },
   {
-  "model": "constructor.fontfamily",
-  "pk": 3,
-  "fields": {
-    "file": "base/fonts/Montserrat-VariableFont_wght.ttf",
-    "user": 1,
-    "name": "Monserrat"
+    "model": "constructor.fontfamily",
+    "pk": 3,
+    "fields": {
+      "file": "base/fonts/Montserrat-VariableFont_wght.ttf",
+      "user": 1,
+      "name": "Monserrat"
+    }
   }
-}
 ]
