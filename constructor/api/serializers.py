@@ -48,10 +48,15 @@ class BaseBlockSerializer(serializers.Serializer):
 class FontFamilySerializer(serializers.ModelSerializer):
     class Meta:
         model = FontFamily
-        fields = ["file"]
+        fields = ["id", "file"]
+        extra_kwargs = {"id": {"read_only": True}}
 
     def create(self, validated_data):
-        return FontFamily.objects.create(**validated_data, name=validated_data["file"].name, user=self.context["request"].user)
+        return FontFamily.objects.create(
+            **validated_data,
+            name=validated_data["file"].name,
+            user=self.context["request"].user
+        )
 
 
 class FullTextBlockSerializer(serializers.ModelSerializer):
