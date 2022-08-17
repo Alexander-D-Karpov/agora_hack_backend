@@ -1,12 +1,18 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 from common.generators import generate_charset
-from constructor.models.base import Block
+from common.models import get_subclasses
+from . import models
 
 
-@receiver(post_save, sender=Block)
-def create_player(sender, instance, created, **kwargs):
-    if created:
-        instance.slug = generate_charset(10)
+def _check_slug(slug, classes) -> bool:
+    return any([x.objects.filter(slug=slug).exists() for x in classes])
+
+
+def create_block(sender, instance, created, **kwargs):
+    if created and models.Block in sender.__mro__:
+        slug = generate_charset(10)
+        classes = get_subclasses(models.Block)
+        while _check_slug(slug, classes):
+            slug = generate_charset(10)
+
+        instance.slug = slug
         instance.save(update_fields=["slug"])
