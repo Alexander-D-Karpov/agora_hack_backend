@@ -52,6 +52,10 @@ class Slider(Block):
 class SlideImage(BaseMediaModel):
     slider = models.ForeignKey(Slider, related_name="slides", on_delete=models.CASCADE)
 
+    def slider_slug(self):
+        # TODO make SerializerMethodField in serializer
+        pass
+
 
 class Iframe(Block):
     def __init__(self, *args, **kwargs):

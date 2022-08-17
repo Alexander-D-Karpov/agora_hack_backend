@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 
-from constructor.models import Text, FontFamily, Site, Image, Block, Slider, SlideImage
+from constructor.models import Text, FontFamily, Site, Image, Block, Slider, SlideImage, Iframe
 
 
 class SiteSerializer(serializers.ModelSerializer):
@@ -142,3 +142,17 @@ class SlideImageSerializer(serializers.ModelSerializer):
             user=self.context["request"].user,
             slider=slider,
         )
+
+
+class IframeBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
+    class Meta:
+        model = Iframe
+        fields = BaseBlockSerializer.Meta.fields + [
+            "origin",
+            "slug"
+        ]
+        extra_kwargs = {"slug": {"read_only": True}}
+
+    def create(self, validated_data):
+        return Iframe.objects.create(**validated_data, site=self._get_site())
+

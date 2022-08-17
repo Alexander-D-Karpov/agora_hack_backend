@@ -4,7 +4,7 @@ from constructor.api.views import (
     ListCreateFontsApiView,
     CreateTextBlockApiView,
     ListCreateSiteApiView,
-    CreateImageBlockApiView, CreateSlideBlockApiView, AddSlideImageApiView,
+    CreateImageBlockApiView, CreateSlideBlockApiView, AddSlideImageApiView, CreateIframeBlockApiView,
 )
 
 urlpatterns = [
@@ -29,5 +29,10 @@ urlpatterns = [
         "<str:slug>/blocks/slide/image/",
         AddSlideImageApiView.as_view(),
         name="add_slide_image_api",
+    ),
+    path(
+        "<str:slug>/blocks/iframe/",
+        CreateIframeBlockApiView.as_view(),
+        name="create_iframe_api",
     ),
 ]

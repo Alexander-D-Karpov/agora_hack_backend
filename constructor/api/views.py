@@ -7,7 +7,7 @@ from constructor.api.serializers import (
     SiteSerializer,
     ImageBlockSerializer,
     SliderBlockSerializer,
-    SlideImageSerializer,
+    SlideImageSerializer, IframeBlockSerializer,
 )
 from constructor.models import FontFamily, Site
 
@@ -63,6 +63,13 @@ class AddSlideImageApiView(generics.CreateAPIView):
 
 class CreateSlideBlockApiView(generics.CreateAPIView):
     serializer_class = SliderBlockSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class CreateIframeBlockApiView(generics.CreateAPIView):
+    serializer_class = IframeBlockSerializer
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
