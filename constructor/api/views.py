@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import MultiPartParser
 
 from constructor.api.serializers import (
     FontFamilySerializer,
@@ -7,7 +7,10 @@ from constructor.api.serializers import (
     SiteSerializer,
     ImageBlockSerializer,
     SliderBlockSerializer,
-    SlideImageSerializer, IframeBlockSerializer,
+    SlideImageSerializer,
+    IframeBlockSerializer,
+    RowBlockSerializer,
+    ColumnBlockSerializer,
 )
 from constructor.models import FontFamily, Site
 
@@ -70,6 +73,20 @@ class CreateSlideBlockApiView(generics.CreateAPIView):
 
 class CreateIframeBlockApiView(generics.CreateAPIView):
     serializer_class = IframeBlockSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class CreateRowSerializer(generics.CreateAPIView):
+    serializer_class = RowBlockSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class CreateColumnSerializer(generics.CreateAPIView):
+    serializer_class = ColumnBlockSerializer
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)

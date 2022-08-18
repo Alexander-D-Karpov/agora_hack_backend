@@ -20,7 +20,7 @@ class Text(Block):
         super().__init__(*args, **kwargs)
         self.validators += []
 
-    text = models.TextField(blank=False)
+    text_block = models.TextField(blank=False)
     font_size = models.IntegerField(
         default=12, validators=[MinValueValidator(1), MaxValueValidator(200)]
     )
@@ -66,3 +66,22 @@ class Iframe(Block):
 
     def __str__(self):
         return f"{self.origin} on {self.site.name}"
+
+
+class Row(Block):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.validators += []
+
+    def __str__(self):
+        return f"row on {self.site.name}"
+
+
+class Column(Block):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.validators += []
+
+    def __str__(self):
+        return f"column on {self.site.name}"
+

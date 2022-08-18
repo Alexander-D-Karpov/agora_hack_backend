@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "corsheaders",
     "colorfield",
+    "polymorphic",
     # apps
     "constructor",
 ]

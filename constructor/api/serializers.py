@@ -3,7 +3,18 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 
-from constructor.models import Text, FontFamily, Site, Image, Block, Slider, SlideImage, Iframe
+from constructor.models import (
+    Text,
+    FontFamily,
+    Site,
+    Image,
+    Block,
+    Slider,
+    SlideImage,
+    Iframe,
+    Row,
+    Column,
+)
 
 
 class SiteSerializer(serializers.ModelSerializer):
@@ -32,9 +43,11 @@ class BaseBlockSerializer(serializers.Serializer):
 
     background_color = ColorField(default="#232325")
     color = ColorField(default="#6385b5")
+    parent = serializers.SlugField(required=False)
 
     class Meta:
         fields = [
+            "parent",
             "margin_right",
             "margin_left",
             "margin_bottom",
@@ -48,6 +61,14 @@ class BaseBlockSerializer(serializers.Serializer):
             "background_color",
             "color",
         ]
+
+    def validate_parent(self, val):
+        if val:
+            qs = Block.objects.filter(slug=val)
+            if qs.exists():
+                return qs.first()
+            raise serializers.ValidationError("Parent doesn't exist")
+        return None
 
     def _get_site(self):
         site = get_object_or_404(
@@ -83,7 +104,7 @@ class FullTextBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
         model = Text
         fields = BaseBlockSerializer.Meta.fields + [
             "slug",
-            "text",
+            "text_block",
             "font_size",
             "font_family",
         ]
@@ -147,12 +168,28 @@ class SlideImageSerializer(serializers.ModelSerializer):
 class IframeBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
     class Meta:
         model = Iframe
-        fields = BaseBlockSerializer.Meta.fields + [
-            "origin",
-            "slug"
-        ]
+        fields = BaseBlockSerializer.Meta.fields + ["origin", "slug"]
         extra_kwargs = {"slug": {"read_only": True}}
 
     def create(self, validated_data):
         return Iframe.objects.create(**validated_data, site=self._get_site())
 
+
+class RowBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
+    class Meta:
+        model = Row
+        fields = BaseBlockSerializer.Meta.fields + ["slug"]
+        extra_kwargs = {"slug": {"read_only": True}}
+
+    def create(self, validated_data):
+        return Row.objects.create(**validated_data, site=self._get_site())
+
+
+class ColumnBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
+    class Meta:
+        model = Column
+        fields = BaseBlockSerializer.Meta.fields + ["slug"]
+        extra_kwargs = {"slug": {"read_only": True}}
+
+    def create(self, validated_data):
+        return Column.objects.create(**validated_data, site=self._get_site())

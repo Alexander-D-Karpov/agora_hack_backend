@@ -1,6 +1,8 @@
 from colorfield.fields import ColorField
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.db import models
+from polymorphic.models import PolymorphicModel
 
 from common.file import file_path_mixing
 from constructor.signals import create_block
@@ -12,18 +14,17 @@ class Site(models.Model):
     user = models.ForeignKey(User, related_name="sites", on_delete=models.CASCADE)
 
 
-class Block(models.Model):
+class Block(PolymorphicModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.validators = [ParentValidator]
 
     parent = models.ForeignKey(
-        "self",
+        to="self",
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
-        related_name="content_%(class)s",
-        related_query_name="children",
+        on_delete=models.SET_NULL,
+        related_name="children",
     )
     site = models.ForeignKey(
         Site,
@@ -58,8 +59,8 @@ class Block(models.Model):
         super().__init_subclass__(**kwargs)
         models.signals.post_save.connect(create_block, sender=cls)
 
-    class Meta:
-        abstract = True
+    def parent_slug(self):
+        pass
 
 
 class BaseMediaModel(models.Model):

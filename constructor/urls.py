@@ -4,7 +4,12 @@ from constructor.api.views import (
     ListCreateFontsApiView,
     CreateTextBlockApiView,
     ListCreateSiteApiView,
-    CreateImageBlockApiView, CreateSlideBlockApiView, AddSlideImageApiView, CreateIframeBlockApiView,
+    CreateImageBlockApiView,
+    CreateSlideBlockApiView,
+    AddSlideImageApiView,
+    CreateIframeBlockApiView,
+    CreateRowSerializer,
+    CreateColumnSerializer,
 )
 
 urlpatterns = [
@@ -34,5 +39,15 @@ urlpatterns = [
         "<str:slug>/blocks/iframe/",
         CreateIframeBlockApiView.as_view(),
         name="create_iframe_api",
+    ),
+    path(
+        "<str:slug>/blocks/row/",
+        CreateRowSerializer.as_view(),
+        name="create_row_api",
+    ),
+    path(
+        "<str:slug>/blocks/column/",
+        CreateColumnSerializer.as_view(),
+        name="create_column_api",
     ),
 ]
