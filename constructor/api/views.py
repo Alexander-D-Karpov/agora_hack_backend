@@ -1,4 +1,6 @@
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 
 from constructor.api.serializers import (
@@ -12,7 +14,8 @@ from constructor.api.serializers import (
     RowBlockSerializer,
     ColumnBlockSerializer,
 )
-from constructor.models import FontFamily, Site
+from constructor.models import FontFamily, Site, Block
+from constructor.services.site_map import get_site_map
 
 
 class ListCreateSiteApiView(generics.ListCreateAPIView):
@@ -90,3 +93,8 @@ class CreateColumnSerializer(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+class ListSiteBlocks(APIView):
+    def get(self, request, slug):
+        return Response(get_site_map(slug))

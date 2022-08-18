@@ -1,6 +1,5 @@
 from colorfield.fields import ColorField
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.db import models
 from polymorphic.models import PolymorphicModel
 
@@ -18,6 +17,8 @@ class Block(PolymorphicModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.validators = [ParentValidator]
+
+    type = "NoType"
 
     parent = models.ForeignKey(
         to="self",
@@ -59,8 +60,25 @@ class Block(PolymorphicModel):
         super().__init_subclass__(**kwargs)
         models.signals.post_save.connect(create_block, sender=cls)
 
-    def parent_slug(self):
-        pass
+    def _get_base_json(self):
+        return {
+            "type": self.type,
+            "margin_right": self.margin_right,
+            "margin_left": self.margin_left,
+            "margin_bottom": self.margin_bottom,
+            "margin_top": self.margin_top,
+            "padding_right": self.padding_right,
+            "padding_left": self.padding_left,
+            "padding_bottom": self.padding_bottom,
+            "padding_top": self.padding_top,
+            "width": self.width,
+            "height": self.height,
+            "background_color": self.background_color,
+            "color": self.color,
+        }
+
+    def get_json(self):
+        raise NotImplementedError
 
 
 class BaseMediaModel(models.Model):

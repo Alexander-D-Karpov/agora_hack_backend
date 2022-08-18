@@ -9,11 +9,12 @@ from constructor.api.views import (
     AddSlideImageApiView,
     CreateIframeBlockApiView,
     CreateRowSerializer,
-    CreateColumnSerializer,
+    CreateColumnSerializer, ListSiteBlocks,
 )
 
 urlpatterns = [
     path("site/", ListCreateSiteApiView.as_view(), name="list_create_site_api"),
+    path("site/<str:slug>", ListSiteBlocks.as_view(), name="list_site_api"),
     path("fonts/", ListCreateFontsApiView.as_view(), name="list_create_font_api"),
     path(
         "<str:slug>/blocks/text/",
