@@ -4,8 +4,8 @@ from django.db import models
 from polymorphic.models import PolymorphicModel
 
 from common.file import file_path_mixing
-from constructor.signals import create_block
-from constructor.validators import ParentValidator
+from constructor.signals import create_block, check_block
+from constructor.validators import ParentValidator, MarginPaddingValidator
 
 
 class Site(models.Model):
@@ -16,9 +16,10 @@ class Site(models.Model):
 class Block(PolymorphicModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.validators = [ParentValidator]
+        self.validators = [ParentValidator, MarginPaddingValidator]
 
     type = "NoType"
+    is_parent = False
 
     parent = models.ForeignKey(
         to="self",
@@ -58,6 +59,7 @@ class Block(PolymorphicModel):
     @classmethod
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
+        models.signals.pre_save.connect(check_block, sender=cls)
         models.signals.post_save.connect(create_block, sender=cls)
 
     def _get_base_json(self):

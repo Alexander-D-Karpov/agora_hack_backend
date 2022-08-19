@@ -110,6 +110,7 @@ class Row(Block):
         self.validators += []
 
     type = "Row"
+    is_parent = True
 
     def get_json(self):
         json = {
@@ -128,6 +129,7 @@ class Column(Block):
         self.validators += []
 
     type = "Column"
+    is_parent = True
 
     def get_json(self):
         json = {
