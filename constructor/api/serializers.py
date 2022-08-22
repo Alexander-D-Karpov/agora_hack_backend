@@ -14,6 +14,9 @@ from constructor.models import (
     Iframe,
     Row,
     Column,
+    Form,
+    FormField,
+    FormFieldAnswer,
 )
 
 
@@ -72,7 +75,7 @@ class BaseBlockSerializer(serializers.Serializer):
 
     def _get_site(self):
         site = get_object_or_404(
-            Site, name=self.context["request"].parser_context["kwargs"]["slug"]
+            Site, name=self.context["request"].parser_context["kwargs"]["site_name"]
         )
         if site.user != self.context["request"].user:
             raise AuthenticationFailed("You are not allowed to edit this site")
@@ -95,7 +98,7 @@ class FontFamilySerializer(serializers.ModelSerializer):
         return FontFamily.objects.create(
             **validated_data,
             name=validated_data["file"].name,
-            user=self.context["request"].user
+            user=self.context["request"].user,
         )
 
 
@@ -193,3 +196,57 @@ class ColumnBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
 
     def create(self, validated_data):
         return Column.objects.create(**validated_data, site=self._get_site())
+
+
+class FormBlockSerializer(serializers.ModelSerializer, BaseBlockSerializer):
+    class Meta:
+        model = Form
+        fields = BaseBlockSerializer.Meta.fields + ["slug", "name"]
+        extra_kwargs = {"slug": {"read_only": True}}
+
+    def create(self, validated_data):
+        return Form.objects.create(**validated_data, site=self._get_site())
+
+
+class FormFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormField
+        fields = ["id", "name", "required", "max_length"]
+        extra_kwargs = {"id": {"read_only": True}}
+
+    def _get_form(self):
+        form = get_object_or_404(
+            Form, slug=self.context["request"].parser_context["kwargs"]["form_slug"]
+        )
+        if form.site.user != self.context["request"].user:
+            raise AuthenticationFailed
+        return form
+
+    def create(self, validated_data):
+        form = self._get_form()
+        return FormField.objects.create(**validated_data, form=form)
+
+
+class FormFieldAnswerSerializer(serializers.ModelSerializer):
+    # Deprecated
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.field = None
+
+    class Meta:
+        model = FormFieldAnswer
+        fields = ["text"]
+
+    def _get_field(self):
+        return get_object_or_404(
+            FormField, id=self.context["request"].parser_context["kwargs"]["field_id"]
+        )
+
+    def validate_text(self, val):
+        self.field = self._get_field()
+        if len(val) > self.field.max_length:
+            raise serializers.ValidationError("Text is too long")
+        return val
+
+    def create(self, validated_data):
+        return FormFieldAnswer.objects.create(**validated_data, field=self.field)

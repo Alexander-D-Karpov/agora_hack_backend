@@ -1,3 +1,4 @@
+import uuid as uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 from constructor.models import Block, BaseMediaModel
@@ -140,3 +141,65 @@ class Column(Block):
 
     def __str__(self):
         return f"column on {self.site.name}"
+
+
+class Form(Block):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.validators += []
+
+    type = "Form"
+    is_parent = False
+
+    name = models.CharField(max_length=100)
+
+    def get_json(self):
+        json = {
+            "fields": [x.get_json() for x in self.fields.all()],
+        }
+        json.update(self._get_base_json())
+        return json
+
+    def __str__(self):
+        return f"{self.name} form on {self.site.name}"
+
+
+class FormField(models.Model):
+    name = models.CharField(max_length=50)
+    form = models.ForeignKey(Form, related_name="fields", on_delete=models.CASCADE)
+    required = models.BooleanField(default=False)
+    max_length = models.IntegerField(default=200)
+
+    def get_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "required": self.required,
+            "max_length": self.max_length,
+        }
+
+    def __str__(self):
+        return f"{self.name} on form {self.form.name} on {self.form.site.name}"
+
+
+class FormSubmission(models.Model):
+    form = models.ForeignKey(Form, related_name="submissions", on_delete=models.CASCADE)
+    uuid = models.UUIDField(
+        default=uuid.uuid4, editable=False, unique=True, primary_key=True
+    )
+
+    def __str__(self):
+        return f"submission on {self.form}"
+
+
+class FormFieldAnswer(models.Model):
+    submission = models.ForeignKey(
+        FormSubmission, related_name="answers", on_delete=models.CASCADE
+    )
+    field = models.ForeignKey(
+        FormField, related_name="answers", on_delete=models.CASCADE
+    )
+    text = models.TextField()
+
+    def __str__(self):
+        return f"answer on {self.field}"
